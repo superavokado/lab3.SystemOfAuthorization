@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>MainPage</title>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<div id="formForId">
+    <p>Введите ваш логин:</p>
+    <input type="text" id="textField" v-model="personId">
+    <p>Введите ваш пароль:</p>
+    <input type="password" id="passwordField" v-model="personPass">
+    <p>Запомнить меня:</p>
+    <input type="checkbox" id="checkbox" v-model="rememberMe">
+    <p>
+        <button v-bind:id="logIn" v-on:click="logIn()">
+            <span>Войти</span>
+        </button>
+        <button v-bind:id="createAccount" v-on:click="createAccount()">
+            <span>Создать новый аккаунт</span>
+        </button>
+    </p>
+</div>
+<script>
+    var formForId = new Vue({
+        el: '#formForId',
+        data: {
+            personId: '',
+            personPass: '',
+            rememberMe:''
+        },
+        methods: {
+            logIn: async function () {
+                let personId = this.personId;
+                let personPass = this.personPass;
+                let date = new Date();
+                let rememberMe = this.rememberMe;
+                console.log(personId, personPass, date, rememberMe);
+                let resp = await fetch(window.location.origin + "/LogIn", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({personId, personPass, date, rememberMe}),
+                });
+
+                let response = await resp.json();
+                console.log(response);
+                swal(response.title, response.text, response.status);
+            },
+
+            createAccount: async function () {
+                let personId = this.personId;
+                let personPass = this.personPass;
+                let date = new Date();
+                let rememberMe = this.rememberMe;
+                console.log(personId, personPass, date, rememberMe);
+                let resp = await fetch(window.location.origin + "/createAccount", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({personId, personPass, date, rememberMe}),
+                });
+
+                let response = await resp.json();
+                console.log(response);
+                swal(response.title, response.text, response.status);
+            }
+        },
+        mounted: async function () {
+            let resp = await fetch(window.location.origin + "/rememberMe");
+            let response = await resp.json();
+            console.log("HERE");
+            console.log(response.personId);
+            console.log(response.personPass);
+            this.personId = response.personId;
+            this.personPass = response.personPass;
+        }
+    });
+</script>
+<style>
+    html {
+        color: #FFFFFF;
+        background: #FC0FC0;
+    }
+</style>
+</html>
