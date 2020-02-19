@@ -22,7 +22,29 @@
         </button>
     </p>
 </div>
+<div id="someText">
+    <p>someText</p>
+    <p>someText</p>
+    <p>someText</p>
+    <p>someText</p>
+    <p>someText</p>
+    <p>
+        <button v-bind:id="exit" v-on:click="exit()">
+            <span>ВЫЙТИ</span>
+        </button>
+    </p>
+</div>
 <script>
+    document.getElementById('someText').hidden = true;
+    var someText = new Vue({
+        el: '#someText',
+        methods: {
+            exit: async function () {
+                document.getElementById('formForId').hidden = false;
+                document.getElementById('someText').hidden = true;
+            }
+        }
+    });
     var formForId = new Vue({
         el: '#formForId',
         data: {
@@ -46,10 +68,12 @@
                 });
 
                 let response = await resp.json();
-                console.log(response);
                 swal(response.title, response.text, response.status);
+                if (response.status == 'success') {
+                    document.getElementById('formForId').hidden = true;
+                    document.getElementById('someText').hidden = false;
+                }
             },
-
             createAccount: async function () {
                 let personId = this.personId;
                 let personPass = this.personPass;
@@ -72,18 +96,17 @@
         mounted: async function () {
             let resp = await fetch(window.location.origin + "/rememberMe");
             let response = await resp.json();
-            console.log("HERE");
             console.log(response.personId);
             console.log(response.personPass);
             this.personId = response.personId;
             this.personPass = response.personPass;
+            if (response.personId != '') {
+                console.log("HERE");
+                console.log(response.personId);
+                document.getElementById('formForId').hidden = true;
+                document.getElementById('someText').hidden = false;
+            }
         }
     });
 </script>
-<style>
-    html {
-        color: #FFFFFF;
-        background: #FC0FC0;
-    }
-</style>
 </html>

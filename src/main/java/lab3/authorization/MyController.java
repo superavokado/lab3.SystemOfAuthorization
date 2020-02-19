@@ -67,6 +67,8 @@ public class MyController {
 
         if (person.getRememberMe()) {
             rememberedPerson.put(httpServletRequest.getRemoteAddr(), person);
+        } else {
+            rememberedPerson.remove(httpServletRequest.getRemoteAddr());
         }
     }
 }
